@@ -47,11 +47,10 @@ jobs:
         uses: parth-1711/IaC-Sentinel/github-action@main
         with:
           plan_file: "tfplan.json"
-          # No local policies/ dir in this repo — point at the ones bundled
-          # in the IaC-Sentinel source repo itself (this action's own
-          # checkout), so nothing needs to be duplicated here. Pass your own
-          # policies_dir instead if this repo should define custom policies.
-          policies_dir: "${{ github.action_path }}/../policies"
+          # policies_dir intentionally omitted: this repo has no local
+          # policies/ folder, so the action falls back to its own bundled
+          # policies from the IaC-Sentinel source repo. Pass policies_dir
+          # here instead if this repo should define its own custom policies.
           gemini_api_key: ${{ secrets.GEMINI_API_KEY }}
           fail_on_high: ${{ steps.override-check.outputs.FAIL_ON_HIGH }}
           github_token: ${{ secrets.GITHUB_TOKEN }}
