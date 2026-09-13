@@ -24,11 +24,11 @@ changes.
   below). They use dummy AWS credentials (`skip_credentials_validation`)
   so `terraform plan` runs for real without needing an actual AWS account.
 - `.github/workflows/iac-sentinel.yml` — references the action from
-  `IaC-Sentinel` and points `policies_dir` at that repo's own bundled
-  `policies/` folder (`${{ github.action_path }}/../policies`) via
-  `github.action_path`, since this repo doesn't have a local copy. Pass a
-  different `policies_dir` here instead if you want this repo to define its
-  own custom policies rather than use the shared defaults.
+  `IaC-Sentinel` and leaves `policies_dir` unset, since this repo has no
+  local `policies/` folder. The action falls back to its own bundled
+  policies from the `IaC-Sentinel` source repo whenever `policies_dir` is
+  empty. Pass a `policies_dir` value here instead if you want this repo to
+  define its own custom policies rather than use the shared defaults.
 
 ## Expected violations
 
