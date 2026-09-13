@@ -1,0 +1,21 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Terraform
+*.tfstate
+*.tfstate.*
+.terraform/
+.terraform.lock.hcl
+tfplan.binary
+tfplan.json
+
+# IaC Sentinel scan output
+pr_comment.md
+scan_result.json
+data/
+
+.env
