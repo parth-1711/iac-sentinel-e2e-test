@@ -32,24 +32,37 @@ changes.
 
 ## Expected violations
 
+The original commit intentionally tripped all 7 policies (12 violations) to
+prove the pipeline end-to-end. A follow-up commit remediated one violation
+per category — security, cost, and governance — to demonstrate a visible
+before/after (compliance score, HIGH count, and the dashboard's trend line
+should all move) without fixing everything at once, the way a real
+remediation would land incrementally across PRs.
+
+**Remediated:**
+
+| Resource | Rule | Fix |
+| :--- | :--- | :--- |
+| `aws_security_group_rule.ssh_from_anywhere` | `open_security_groups` (HIGH) | CIDR restricted to `10.0.0.0/16` instead of `0.0.0.0/0` |
+| `aws_instance.worker` | `oversized_instances` (MEDIUM) | Downsized from `m5.4xlarge` to `t3.large` |
+| `aws_s3_bucket.app_logs` | `required_tags` (MEDIUM) | Added the missing `Owner` and `Project` tags |
+
+**Still present (9 violations: 3 HIGH, 4 MEDIUM, 2 LOW):**
+
 | Resource | Rule | Severity |
 | :--- | :--- | :--- |
-| `aws_security_group_rule.ssh_from_anywhere` | `open_security_groups` | HIGH |
 | `aws_security_group.mgmt_sg` (inline ingress) | `open_security_groups` | HIGH |
 | `aws_security_group.mgmt_sg` (name "Public SG") | `naming_conventions` | LOW |
 | `aws_s3_bucket.app_logs` (public-read ACL) | `public_s3_buckets` | HIGH |
-| `aws_s3_bucket.app_logs` (missing Owner/Project) | `required_tags` | MEDIUM |
 | `aws_s3_bucket_public_access_block.app_logs_pab` | `public_s3_buckets` | HIGH |
 | `aws_ebs_volume.app_data` | `unencrypted_volumes` | MEDIUM |
-| `aws_instance.worker` (m5.4xlarge) | `oversized_instances` | MEDIUM |
 | `aws_instance.worker` (root + attached volumes) | `unencrypted_volumes` | MEDIUM x2 |
 | `aws_instance.dev_sandbox` (no shutdown tag) | `missing_auto_shutdown_tags` | LOW |
 | `aws_instance.dev_sandbox` (missing Owner/Project) | `required_tags` | MEDIUM |
 
-**12 violations total, 4 of them HIGH.** With the default fail-closed
-setting, this means **the check is expected to fail (red X)** on the first
-PR — that's the fail-closed gate working correctly, not a bug. To see the
-fail-open override path instead, add the `skip-iac-sentinel` or
+With the default fail-closed setting, the check is still expected to fail
+(red X) on this PR too — 3 violations remain HIGH. To see the fail-open
+override path instead, add the `skip-iac-sentinel` or
 `compliance-approved` label to the PR before (or after) it runs.
 
 ## Setup

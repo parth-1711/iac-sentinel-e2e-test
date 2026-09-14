@@ -1,8 +1,8 @@
-# --- Violates: cost/oversized_instances ---
+# --- Remediated: downsized from m5.4xlarge to stay within cost budget ---
 # --- Violates: security/unencrypted_volumes (root + attached EBS block devices) ---
 resource "aws_instance" "worker" {
   ami           = "ami-0c55b159cbfafe1f0"
-  instance_type = "m5.4xlarge"
+  instance_type = "t3.large"
 
   root_block_device {
     encrypted = false
