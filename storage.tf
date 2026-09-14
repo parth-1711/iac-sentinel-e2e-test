@@ -1,21 +1,23 @@
 # --- Violates: security/public_s3_buckets (public ACL) ---
-# --- Violates: governance/required_tags (missing Owner & Project) ---
+# --- Remediated: added the mandatory Owner & Project governance tags ---
 resource "aws_s3_bucket" "app_logs" {
   bucket = "iac-sentinel-demo-app-logs"
   acl    = "public-read"
 
   tags = {
     Environment = "production"
+    Owner       = "platform-team"
+    Project     = "iac-sentinel-demo"
   }
 }
 
-# --- Violates: security/public_s3_buckets (public access block disabled) ---
+# --- Remediated: all four public access block flags now fully enabled ---
 resource "aws_s3_bucket_public_access_block" "app_logs_pab" {
   bucket = aws_s3_bucket.app_logs.id
 
-  block_public_acls       = false
+  block_public_acls       = true
   block_public_policy     = true
-  ignore_public_acls      = false
+  ignore_public_acls      = true
   restrict_public_buckets = true
 }
 
